@@ -72,6 +72,9 @@ varImp(rfFit, scale = F)
 predict(rfFit,pmlTestSub)
 ```
 
+```{r}
+rfFit
+```
 # Evaluating the results :
 
 - The model proved to be suitable for the problem at hand, with an accuracy score and kappa of 0.99, and from the cross-validation, we can be confident that it's not biased or overfitted.

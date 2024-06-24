@@ -575,6 +575,31 @@ predict(rfFit,pmlTestSub)
 ## Levels: A B C D E
 ```
 
+
+```r
+rfFit
+```
+
+```
+## Random Forest 
+## 
+## 19622 samples
+##    52 predictor
+##     5 classes: 'A', 'B', 'C', 'D', 'E' 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 17660, 17661, 17659, 17659, 17659, 17659, ... 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy   Kappa    
+##    2    0.9952601  0.9940042
+##   27    0.9949034  0.9935532
+##   52    0.9898068  0.9871059
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was mtry = 2.
+```
 # Evaluating the results :
 
 - The model proved to be suitable for the problem at hand, with an accuracy score and kappa of 0.99, and from the cross-validation, we can be confident that it's not biased or overfitted.
