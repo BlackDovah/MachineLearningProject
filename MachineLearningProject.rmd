@@ -34,7 +34,6 @@ pmlTest = read.csv("pml-testing.csv")
 
 ```{r}
 str(pmlTrain)
-summary(pmlTrain)
 ```
 
 - By examining the variables with NA values, we can see that they are mostly NA, and an imputation approach won't be possible. In the test set, the same variables were 100% NA.
