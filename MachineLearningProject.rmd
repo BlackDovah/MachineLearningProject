@@ -1,0 +1,87 @@
+---
+title: "MachineLearningProject"
+author: "Samuel Aboelkhir"
+date: "`r Sys.Date()`"
+output: 
+   html_document:
+     toc: yes
+     toc_float: yes
+     keep_md: TRUE
+     df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Abstract :
+
+- In this analysis, we will be preparing a prediction model, with the purpose of predicting the quality of weight lift training for weight lifters. In the provided data, we have 5 categories describing the quality of training, where "A" is correct training, and "B" through "E" are training with common errors. The data was collected from 6 different participants with sensors attached to various parts of their body.
+
+# Examining and cleanining the data :
+
+- For this analysis we will be needing the caret and e1071 packages.
+
+```{r}
+library(caret)
+library(e1071)
+
+pmlTrain = read.csv("pml-training.csv")
+pmlTest = read.csv("pml-testing.csv")
+```
+
+- Upon examining the data, we can see multiple variables that won't be relevant in the analysis, such as time stamps, windows, and the participant names, as well as multiple variables with NA or empty ("") variables.
+
+```{r}
+str(pmlTrain)
+summary(pmlTrain)
+```
+
+- By examining the variables with NA values, we can see that they are mostly NA, and an imputation approach won't be possible. In the test set, the same variables were 100% NA.
+
+- As such, using the following code, we can modify both sets to remove all the variables that have NA values, as well as subset all the variables that don't seem relevant to the analysis out of the data sets.
+
+- We will also be converting the "classe" variable into a factor variable.
+
+```{r}
+pmlTrain[pmlTrain == ""] = NA
+pmlTrain = pmlTrain[,!sapply(pmlTrain, anyNA)]
+pmlTrainSub = subset(pmlTrain, select = -c(user_name,num_window, new_window, cvtd_timestamp, raw_timestamp_part_2, raw_timestamp_part_1, X))
+pmlTrainSub$classe = factor(pmlTrainSub$classe)
+
+pmlTest[pmlTest == ""] = NA
+pmlTest = pmlTest[,!sapply(pmlTest, anyNA)]
+pmlTestSub =subset(pmlTest, select = -c(num_window, new_window, cvtd_timestamp, raw_timestamp_part_2, raw_timestamp_part_1))
+```
+
+# Choosing predictors, and deciding on a model :
+
+- Next up, we need to figure out which predictors and model we will be using.
+
+- In order to do that, we can combine those steps, by using a random forest model with all the predictors selected and the "importance" parameter being set to true.
+
+- We can also add a 10-k fold cross validation training control to the model to ensure we have done sufficient resampling, while maintaining a good balance of bias and variance.
+
+```{r, cache=TRUE}
+ctrl  <- trainControl(method  = "cv",number  = 10)
+
+rfFit = train(classe~., method = "rf", data = pmlTrainSub, trControl = ctrl, importance = T)
+
+varImp(rfFit, scale = F)
+
+predict(rfFit,pmlTestSub)
+```
+
+# Evaluating the results :
+
+- The model proved to be suitable for the problem at hand, with an accuracy score and kappa of 0.99, and from the cross-validation, we can be confident that it's not biased or overfitted.
+
+- The varImp function also showed that all the predictors were significant for the model.
+
+- The predictions from the test set were then cross-referenced with accompanying quiz's results, and the results showed a 100% prediction accuracy.
+
+# Session info :
+
+```{r}
+sessionInfo()
+```
