@@ -257,6 +257,16 @@ rfFit
 
 - The predictions from the test set were then cross-referenced with accompanying quiz's results, and the results showed a 100% prediction accuracy.
 
+- As for the out of sample error, it can be estimated by taking the mean of the calculated accuracies, and subtracting the outcome from 1.
+
+
+```r
+1- mean(rfFit$results[,"Accuracy"])
+```
+
+```
+## [1] 0.006676576
+```
 # Session info :
 
 
